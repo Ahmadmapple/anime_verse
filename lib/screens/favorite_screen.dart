@@ -1,5 +1,6 @@
+import 'package:anime_verse/providers/app_state_provider.dart';
 import 'package:flutter/material.dart';
-import '../data/dummy_data.dart';
+import 'package:provider/provider.dart';
 import '../widgets/app_scaffold.dart';
 import '../widgets/favorite_anime_card.dart';
 
@@ -10,9 +11,6 @@ class FavoriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
-    // Get one anime from dummy data for display
-    final favoriteAnime = DummyData.animeList.first;
 
     return AppScaffold(
       appBar: AppBar(
@@ -35,19 +33,38 @@ class FavoriteScreen extends StatelessWidget {
 
           // Favorite Anime List
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(
-                vertical: screenHeight * 0.01,
-              ),
-              itemCount: 1,
-              itemBuilder: (context, index) {
-                return FavoriteAnimeCard(
-                  title: favoriteAnime.title,
-                  genre: favoriteAnime.genre,
-                  rating: favoriteAnime.rating,
-                  imagePath: favoriteAnime.imagePath,
-                );
-              },
+            child: Consumer<AppStateProvider>(
+                builder: (context, favoriteProvider, child){
+                  final favorites = favoriteProvider.favorites;
+
+                  if (favorites.isEmpty){
+                    return const Center(
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.favorite_border, size: 32, color: Colors.white70),
+                              SizedBox(height: 8),
+                              Text('Belum ada anime favorit', style: TextStyle(color: Colors.white70, fontSize: 16))
+                            ]
+                        )
+                    );
+                  }
+                  return ListView.builder(
+                    padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.01,
+                    ),
+                    itemCount: favorites.length,
+                    itemBuilder: (context, index) {
+                      final anime = favorites[index];
+                      return FavoriteAnimeCard(
+                        title: anime.title,
+                        genre: anime.genre,
+                        rating: anime.rating,
+                        imagePath: anime.imagePath,
+                      );
+                    },
+                  );
+                }
             ),
           ),
         ],
