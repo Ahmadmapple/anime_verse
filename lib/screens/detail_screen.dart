@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:anime_verse/data/dummy_data.dart';
+import 'package:anime_verse/models/anime.dart';
 import '../widgets/app_scaffold.dart';
 
 class DetailScreen extends StatelessWidget {
   final String id;
-  final String title;
-  final String imagePath;
-  final String genre;
-  final String rating;
-  final String totalEpisodes;
-  final String description;
 
   const DetailScreen({
     super.key,
-    this.id = '1',
-    this.title = 'Black Clover',
-    this.imagePath = 'assets/images/black_clover.jpg',
-    this.genre = 'Action, Adventure, Fantasy',
-    this.rating = '8.14',
-    this.totalEpisodes = '170',
-    this.description = "",
+    required this.id
+
+
   });
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    final Anime? anime = DummyData.animeList.cast<Anime?>().firstWhere((anime) => anime?.id == id,
+      orElse: () => null,);
+
+    if (anime == null) {
+      return Scaffold (
+        appBar: AppBar(
+            title: Text('Anime Not Found')),
+        body: const Center(
+          child: Text('Anime tidak ditemukan.'),
+        ),
+      );
+    }
+
     return AppScaffold(
       body: CustomScrollView(
         slivers: [
@@ -59,7 +65,7 @@ class DetailScreen extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   // Background image
-                  Image.asset(imagePath, fit: BoxFit.cover),
+                  Image.asset(anime.imagePath, fit: BoxFit.cover),
                   // Gradient overlay for better text visibility
                   Container(
                     decoration: BoxDecoration(
@@ -84,7 +90,7 @@ class DetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
+                          anime.title,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: screenWidth * 0.07,
@@ -101,7 +107,7 @@ class DetailScreen extends StatelessWidget {
                         ),
                         SizedBox(height: screenHeight * 0.005),
                         Text(
-                          genre,
+                          anime.genre,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.9),
                             fontSize: screenWidth * 0.04,
@@ -156,7 +162,7 @@ class DetailScreen extends StatelessWidget {
                             screenWidth * 0.04),
                             SizedBox(width: screenWidth * 0.01),
                             Text(
-                              rating,
+                              anime.rating,
                               style: TextStyle(color: Colors.white, fontSize:
                               screenWidth * 0.035, fontWeight: FontWeight.w700),
                             ),
@@ -182,7 +188,7 @@ class DetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(screenWidth * 0.02),
                         ),
                         child: Text(
-                          '$totalEpisodes Episodes',
+                          '${anime.totalEpisodes} Episodes',
                           style: TextStyle(color: Colors.white, fontSize:
                           screenWidth * 0.035, fontWeight: FontWeight.w700),
                         ),
@@ -230,7 +236,7 @@ class DetailScreen extends StatelessWidget {
                   ),
                   SizedBox(height: screenHeight * 0.015),
                   Text(
-                    description,
+                    anime.description,
                     style: TextStyle(color: Colors.white.withValues(alpha: 0.9),
                         fontSize: screenWidth * 0.038, height: 1.5),
                     textAlign: TextAlign.justify,
