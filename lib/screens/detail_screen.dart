@@ -17,13 +17,13 @@ class DetailScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     final Anime? anime = DummyData.animeList.cast<Anime?>().firstWhere(
-      (item) => item?.id == id,
+      (anime) => anime?.id == id,
       orElse: () => null,
     );
 
     if (anime == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Anime not found.')),
+        appBar: AppBar(title: Text('Anime Not Found')),
         body: const Center(child: Text('Anime tidak ditemukan.')),
       );
     }
@@ -61,7 +61,9 @@ class DetailScreen extends StatelessWidget {
               background: Stack(
                 fit: StackFit.expand,
                 children: [
+                  // Background image
                   Image.asset(anime.imagePath, fit: BoxFit.cover),
+                  // Gradient overlay for better text visibility
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -76,6 +78,7 @@ class DetailScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // Title at the bottom of the image
                   Positioned(
                     bottom: screenHeight * 0.02,
                     left: screenWidth * 0.04,
@@ -121,14 +124,13 @@ class DetailScreen extends StatelessWidget {
               ),
             ),
           ),
-
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.all(screenWidth * 0.04),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Rating, Episodes, dan Favorite
+                  // Rating and Episodes info
                   Row(
                     children: [
                       // Rating
@@ -170,9 +172,7 @@ class DetailScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
-                      SizedBox(width: screenWidth * 0.03),
-
+                      SizedBox(width: screenWidth * 0.05),
                       // Total Episodes
                       Container(
                         padding: EdgeInsets.symmetric(
@@ -180,7 +180,7 @@ class DetailScreen extends StatelessWidget {
                           vertical: screenHeight * 0.01,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0B395E),
+                          color: const Color(0xFF0b395e),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.3),
@@ -201,13 +201,15 @@ class DetailScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(width: screenWidth * 0.05),
 
-                      const Spacer(),
-
-                      // Favorite Button
-                      Consumer<AppStateProvider>(
+                      //Add to Favorites Button
+                      Expanded(
+                      child: Consumer<AppStateProvider>(
                         builder: (context, favoriteProvider, child) {
-                          final isFavorite = favoriteProvider.isFavorite(anime.id);
+                          final isFavorite = favoriteProvider.isFavorite(
+                            anime.id,
+                          );
 
                           return GestureDetector(
                             onTap: () {
@@ -232,7 +234,6 @@ class DetailScreen extends StatelessWidget {
                                 ),
                               ),
                               child: Row(
-                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
                                     isFavorite
@@ -242,14 +243,17 @@ class DetailScreen extends StatelessWidget {
                                     size: screenWidth * 0.04,
                                   ),
                                   SizedBox(width: screenWidth * 0.01),
-                                  Text(
-                                    isFavorite
-                                        ? 'Added to Favorites'
-                                        : 'Add to Favorites',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: screenWidth * 0.035,
-                                      fontWeight: FontWeight.w700,
+                                  Flexible(
+                                    child: Text(
+                                      isFavorite
+                                          ? 'Added to Favorites'
+                                          : 'Add to Favorites',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: screenWidth * 0.035,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ],
@@ -258,12 +262,11 @@ class DetailScreen extends StatelessWidget {
                           );
                         },
                       ),
+                      ),
                     ],
                   ),
-
                   SizedBox(height: screenHeight * 0.03),
-
-                  // Synopsis
+                  // Description
                   Text(
                     'Synopsis',
                     style: TextStyle(
@@ -272,10 +275,7 @@ class DetailScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   SizedBox(height: screenHeight * 0.015),
-
-                  // Anime Description
                   Text(
                     anime.description,
                     style: TextStyle(
@@ -285,7 +285,6 @@ class DetailScreen extends StatelessWidget {
                     ),
                     textAlign: TextAlign.justify,
                   ),
-
                   SizedBox(height: screenHeight * 0.03),
                 ],
               ),

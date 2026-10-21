@@ -15,11 +15,11 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => AppStateProvider(),
       child: MaterialApp.router(
+        //tambahkan router untuk navigasi
         title: 'Anime Verse',
-        theme: ThemeData(
-          fontFamily: 'Urbanist',
-        ),
-        routerConfig: createRouter(),
+        theme: ThemeData(fontFamily: 'Urbanist'),
+        routerConfig:
+            createRouter(), //gunakan createRouter untuk konfigurasi router
         debugShowCheckedModeBanner: false,
       ),
     );
